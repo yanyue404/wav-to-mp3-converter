@@ -1,0 +1,43 @@
+{
+  "name": "wav-to-mp3-converter",
+  "version": "1.0.0",
+  "description": "快速将 WAV 文件转换为 MP3 格式的 Node.js 工具",
+  "main": "toMp3.js",
+  "bin": {
+    "wav2mp3": "./cli.js"
+  },
+  "scripts": {
+    "install-check": "node install.js",
+    "help": "node cli.js --help",
+    "start": "node toMp3.js",
+    "cli": "node cli.js",
+    "examples": "node examples/example.js",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "wav",
+    "mp3",
+    "converter",
+    "ffmpeg",
+    "audio",
+    "nodejs",
+    "cli"
+  ],
+  "author": "yanyue4",
+  "license": "MIT",
+  "dependencies": {
+    "fluent-ffmpeg": "^2.1.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yanyue4/wav-to-mp3-converter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yanyue4/wav-to-mp3-converter/issues"
+  },
+  "homepage": "https://github.com/yanyue4/wav-to-mp3-converter#readme"
+}
