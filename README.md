@@ -4,6 +4,8 @@
 
 ## 🚀 特性
 
+- 🎨 **React 前端**: 提供可部署到 GitHub Pages 的浏览器转换界面
+- 🌐 **浏览器转换**: Web 版使用 FFmpeg WebAssembly，本地完成转换，不上传音频
 - ⚡ **快速转换**: 使用 FFmpeg 作为底层引擎，转换速度极快
 - 📁 **批量处理**: 支持单个文件、批量文件和整个目录的转换
 - 🎛️ **灵活配置**: 可自定义比特率、质量、声道数等参数
@@ -78,7 +80,31 @@ wav2mp3 --help
 
 ## 🎯 使用方法
 
-### 方法一：命令行工具 (推荐)
+### 方法一：React Web 界面
+
+Web 版适合部署到 GitHub Pages，用户可以直接在浏览器中选择 WAV 文件并转换为 MP3。
+
+```bash
+# 安装依赖
+npm install
+
+# 启动本地前端开发服务
+npm run dev
+
+# 构建 GitHub Pages 静态文件
+npm run build
+```
+
+Web 界面默认使用最低质量/最小体积预设：
+
+- 比特率：`64k`
+- 质量等级：`9`（0 为最高质量，9 为最低质量）
+- 声道数：`1`
+- 采样率：`22050 Hz`
+
+> 说明：GitHub Pages 是纯静态网页，浏览器不能执行 `ffmpeg -version` 或读取用户电脑的 PATH。因此 Web 版检测的是浏览器 WebAssembly 能力和 FFmpeg WebAssembly 引擎加载状态；如果需要真实检测本机 FFmpeg 安装，请使用 CLI 的 `npm run install-check`。
+
+### 方法二：命令行工具 (推荐)
 
 #### 使用全局命令 (如果已全局安装)
 
@@ -154,7 +180,7 @@ node cli.js --help
 - `-s, --sample-rate <采样率>` - 设置采样率 (默认: 44100)
 - `-h, --help` - 显示帮助信息
 
-### 方法二：编程接口
+### 方法三：编程接口
 
 #### 基本用法
 
@@ -252,6 +278,15 @@ await converter.convertBatch(inputFiles, "./output_folder", {
 项目提供了多个便捷的 npm 脚本：
 
 ```bash
+# 启动 React Web 开发服务
+npm run dev
+
+# 构建 GitHub Pages 静态站点
+npm run build
+
+# 本地预览构建结果
+npm run preview
+
 # 检查安装环境
 npm run install-check
 
@@ -268,10 +303,29 @@ npm run test
 npm start
 ```
 
+## 🌐 部署到 GitHub Pages
+
+本项目的前端构建已配置 `base: "/wav-to-mp3-converter/"`，适配仓库地址 `https://github.com/yanyue404/wav-to-mp3-converter`。
+
+手动部署步骤：
+
+1. 运行 `npm install` 安装依赖。
+2. 运行 `npm run build` 生成 `dist` 目录。
+3. 将 `dist` 目录内容发布到 GitHub Pages，例如使用 `gh-pages` 分支，或在 GitHub 仓库 Settings → Pages 中选择对应发布源。
+4. 部署完成后访问 `https://yanyue404.github.io/wav-to-mp3-converter/`。
+
+如果需要自动部署，可以后续添加 GitHub Actions，将 `npm run build` 产物发布到 Pages。
+
 ## 📁 项目结构
 
 ```
 wav-to-mp3-converter/
+├── src/              # React Web 前端源码
+│   ├── App.jsx       # 前端转换界面和浏览器 FFmpeg 逻辑
+│   ├── main.jsx      # React 入口
+│   └── styles.css    # 页面样式
+├── index.html        # Vite 页面入口
+├── vite.config.js    # Vite 和 GitHub Pages base 配置
 ├── toMp3.js          # 主转换器类
 ├── cli.js            # 命令行工具 (配置为 wav2mp3 命令)
 ├── install.js        # 安装检查脚本

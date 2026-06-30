@@ -12,5 +12,7 @@ yarn-error.log
 npm-debug.log
 site/.vuepress/dist
 
+dist
+
 # python
 __pycache__

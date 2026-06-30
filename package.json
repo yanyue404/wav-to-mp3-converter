@@ -7,6 +7,9 @@
     "wav2mp3": "./cli.js"
   },
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "install-check": "node install.js",
     "help": "node cli.js --help",
     "start": "node toMp3.js",
@@ -26,9 +29,14 @@
   "author": "yanyue4",
   "license": "MIT",
   "dependencies": {
-    "fluent-ffmpeg": "^2.1.2"
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
+    "@vitejs/plugin-react": "^4.7.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "vite": "^4.5.14"
   },
-  "devDependencies": {},
   "engines": {
     "node": ">=14.0.0"
   },
@@ -39,5 +47,5 @@
   "bugs": {
     "url": "https://github.com/yanyue4/wav-to-mp3-converter/issues"
   },
-  "homepage": "https://github.com/yanyue4/wav-to-mp3-converter#readme"
+  "homepage": "https://yanyue404.github.io/wav-to-mp3-converter/"
 }
