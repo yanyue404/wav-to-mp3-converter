@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile } from "@ffmpeg/util";
+import ffmpegWorkerUrl from "@ffmpeg/ffmpeg/worker?worker&url";
 
 const CORE_VERSION = "0.12.10";
-const CORE_BASE_URL = `https://cdn.jsdelivr.net/npm/@ffmpeg/core@${CORE_VERSION}/dist/umd`;
+const CORE_BASE_URL = `https://cdn.jsdelivr.net/npm/@ffmpeg/core@${CORE_VERSION}/dist/esm`;
 const ENGINE_LOAD_TIMEOUT = 45000;
 
 const PRESETS = {
@@ -134,10 +135,19 @@ export default function App() {
 
         const controller = new AbortController();
         const timeoutId = window.setTimeout(() => controller.abort(), ENGINE_LOAD_TIMEOUT);
+        const classWorkerURL = new URL(ffmpegWorkerUrl, window.location.origin).href;
+        const coreURL = await toTimedBlobURL(`${CORE_BASE_URL}/ffmpeg-core.js`, "text/javascript");
+        const wasmURL = await toTimedBlobURL(`${CORE_BASE_URL}/ffmpeg-core.wasm`, "application/wasm");
+
+        console.info("[ffmpeg] 开始加载 WebAssembly 引擎", {
+          classWorkerURL,
+          coreSource: `${CORE_BASE_URL}/ffmpeg-core.js`,
+        });
 
         await ffmpeg.load({
-          coreURL: await toTimedBlobURL(`${CORE_BASE_URL}/ffmpeg-core.js`, "text/javascript"),
-          wasmURL: await toTimedBlobURL(`${CORE_BASE_URL}/ffmpeg-core.wasm`, "application/wasm"),
+          classWorkerURL,
+          coreURL,
+          wasmURL,
         }, { signal: controller.signal });
         window.clearTimeout(timeoutId);
 
@@ -146,16 +156,22 @@ export default function App() {
         setEngineMessage("浏览器 FFmpeg 引擎已就绪，转换会在本机浏览器内完成。");
         return ffmpeg;
       } catch (loadError) {
-        console.warn("FFmpeg WebAssembly 加载失败", loadError);
+        console.warn("[ffmpeg] WebAssembly 加载失败", {
+          name: loadError?.name,
+          message: loadError?.message || String(loadError),
+          workerUrl: ffmpegWorkerUrl,
+          coreBaseURL: CORE_BASE_URL,
+          error: loadError,
+        });
         ffmpegRef.current?.terminate();
         ffmpegRef.current = null;
         enginePromiseRef.current = null;
         setEngineStatus("error");
         setEngineMessage("FFmpeg 引擎加载失败，请检查网络、浏览器版本或点击检测按钮重试。");
         setError(
-          loadError.name === "AbortError"
+          loadError?.name === "AbortError"
             ? "FFmpeg 引擎加载超时，请检查 CDN 网络连接后重试。"
-            : loadError.message || "FFmpeg 引擎加载失败"
+            : loadError?.message || String(loadError) || "FFmpeg 引擎加载失败"
         );
         return null;
       }
