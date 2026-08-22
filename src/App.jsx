@@ -135,7 +135,7 @@ export default function App() {
 
         const controller = new AbortController();
         const timeoutId = window.setTimeout(() => controller.abort(), ENGINE_LOAD_TIMEOUT);
-        const classWorkerURL = new URL(ffmpegWorkerUrl, window.location.origin).href;
+        const classWorkerURL = new URL(ffmpegWorkerUrl, window.location.href).href;
         const coreURL = await toTimedBlobURL(`${CORE_BASE_URL}/ffmpeg-core.js`, "text/javascript");
         const wasmURL = await toTimedBlobURL(`${CORE_BASE_URL}/ffmpeg-core.wasm`, "application/wasm");
 

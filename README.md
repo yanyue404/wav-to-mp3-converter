@@ -287,6 +287,9 @@ npm run build
 # 本地预览构建结果
 npm run preview
 
+# 构建并推送到 gh-pages
+npm run deploy
+
 # 检查安装环境
 npm run install-check
 
@@ -303,18 +306,42 @@ npm run test
 npm start
 ```
 
-## 🌐 部署到 GitHub Pages
+## 🌐 在线版（GitHub Pages）
 
-本项目的前端构建已配置 `base: "/wav-to-mp3-converter/"`，适配仓库地址 `https://github.com/yanyue404/wav-to-mp3-converter`。
+前端是纯静态页面，转换在浏览器里用 FFmpeg WebAssembly 完成，**不上传音频**。构建使用相对路径 `base: "./"`，所以：
 
-手动部署步骤：
+- 线上：`https://yanyue404.github.io/wav-to-mp3-converter/`
+- 本地：`npm run preview`，或把 `dist` 放到任意静态目录打开
 
-1. 运行 `npm install` 安装依赖。
-2. 运行 `npm run build` 生成 `dist` 目录。
-3. 将 `dist` 目录内容发布到 GitHub Pages，例如使用 `gh-pages` 分支，或在 GitHub 仓库 Settings → Pages 中选择对应发布源。
-4. 部署完成后访问 `https://yanyue404.github.io/wav-to-mp3-converter/`。
+### 自动部署
 
-如果需要自动部署，可以后续添加 GitHub Actions，将 `npm run build` 产物发布到 Pages。
+推送到 `master` / `main`，或在 Actions 里手动运行 **Deploy GitHub Pages**。工作流会执行 `npm run build`，把 `dist` 推到 `gh-pages` 分支。
+
+仓库 Settings → Pages：
+
+1. Source 选 **Deploy from a branch**
+2. Branch 选 **gh-pages** / **/(root)**
+3. 保存后等待一两分钟，打开 `https://<user>.github.io/wav-to-mp3-converter/`
+
+首次使用请确认仓库已开启 Pages，且 Actions 有写 `contents` 的权限（默认 `GITHUB_TOKEN` 即可）。
+
+### 本地发布到 gh-pages
+
+```bash
+npm install
+npm run deploy
+```
+
+`deploy` 会先构建，再用 `gh-pages` 把 `dist` 推到 `gh-pages` 分支。
+
+### 只在本机浏览器预览
+
+```bash
+npm run build
+npm run preview
+```
+
+浏览器打开预览地址即可，行为和线上一致（选 WAV → 本机转 MP3 → 下载）。
 
 ## 📁 项目结构
 
